@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { Toaster } from '@/components/ui/toaster'
-import Header from '@/components/layout/Header'
-import Hero from '@/components/home/Hero'
-import ClassList from '@/components/home/ClassList'
-import UserInfoForm from '@/components/home/UserInfoForm'
+import { Toaster } from './components/ui/toaster'
+import Header from './components/layout/Header'
+import Hero from './components/home/Hero'
+import ClassList from './components/home/ClassList'
+import UserInfoForm from './components/home/UserInfoForm'
 import AdminPanel from './components/admin/AdminPanel'
 
 function App() {
