@@ -1,37 +1,54 @@
+import React, { useState } from 'react';
+import { supabase } from '../../supabaseClient';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+const UserInfoForm = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', class: '' });
+  const [loading, setLoading] = useState(false);
 
-const UserInfoForm = ({ userName, setUserName, userEmail, setUserEmail }) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { error } = await supabase
+      .from('bookings')
+      .insert([{ 
+        name: formData.name, 
+        email: formData.email, 
+        class_name: formData.class 
+      }]);
+
+    setLoading(false);
+
+    if (error) {
+      alert('Booking failed ❌');
+      console.error(error);
+    } else {
+      alert('✅ Booking successful!');
+      setFormData({ name: '', email: '', class: '' });
+    }
+  };
+
   return (
-    <motion.div
-      className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 mb-8 shadow-xl border border-emerald-100"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.6 }}
-    >
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">Book Your Class</h3>
-      <div className="grid md:grid-cols-2 gap-4">
-        <motion.div whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
-          <input
-            type="text"
-            placeholder="Your Name"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            className="px-4 py-3 rounded-xl border border-emerald-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all w-full"
-          />
-        </motion.div>
-        <motion.div whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
-          <input
-            type="email"
-            placeholder="Your Email"
-            value={userEmail}
-            onChange={(e) => setUserEmail(e.target.value)}
-            className="px-4 py-3 rounded-xl border border-emerald-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all w-full"
-          />
-        </motion.div>
-      </div>
-    </motion.div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input type="text" placeholder="Your Name"
+        value={formData.name}
+        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+        required className="w-full p-2 border" />
+
+      <input type="email" placeholder="Email"
+        value={formData.email}
+        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        required className="w-full p-2 border" />
+
+      <input type="text" placeholder="Class Name"
+        value={formData.class}
+        onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+        required className="w-full p-2 border" />
+
+      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded" disabled={loading}>
+        {loading ? 'Booking...' : 'Book Now'}
+      </button>
+    </form>
   );
 };
 
